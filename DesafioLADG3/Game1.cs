@@ -2,12 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary;
+using MonoGameLibrary.Graphics;
 namespace DesafioLADG3
 {
     public class Game1 : Core
     {
 
-        private Texture2D _player;
+        private AnimatedSprite _player;
+        private AnimatedSprite _enemy;
 
         public Game1() : base("Desafio LADG 3", 1280, 720, false)
         {
@@ -21,7 +23,15 @@ namespace DesafioLADG3
 
         protected override void LoadContent()
         {
-            _player = Content.Load<Texture2D>("player/spritesheets");
+            TextureAtlas playerTextureAtlas = TextureAtlas.FromFile(Content, "player/player_definition.xml");
+            TextureAtlas enemyTextureAtlas = TextureAtlas.FromFile(Content, "enemy/enemy_definition.xml");
+
+            _player = playerTextureAtlas.CreateAnimatedSprite("player");
+            _player.Scale = new Vector2(2.5f, 2.5f);
+
+            _enemy = enemyTextureAtlas.CreateAnimatedSprite("enemy");
+            _enemy.Scale = new Vector2(3.0f, 3.0f);
+
             base.LoadContent();
         }
 
@@ -30,7 +40,8 @@ namespace DesafioLADG3
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            _player.Update(gameTime);
+            _enemy.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -40,17 +51,9 @@ namespace DesafioLADG3
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            SpriteBatch.Draw(
-                texture: _player,
-                position: new Vector2(100, 100),
-                sourceRectangle: null,
-                color: Color.White,
-                rotation: 0f,
-                origin: default,
-                scale: new Vector2(5.5f, 5.5f),
-                effects: SpriteEffects.None,
-                layerDepth: 0f
-            );
+
+            _player.Draw(SpriteBatch, Vector2.Zero);
+            _enemy.Draw(SpriteBatch, new Vector2(_player.Width + 10, 0));
 
             SpriteBatch.End();
 

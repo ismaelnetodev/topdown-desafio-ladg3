@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas>
+    <Texture>player/spritesheets</Texture>
+    <Regions>
+		<Region name="player1" x="0" y="0" width="32" height="32" />
+		<Region name="player2" x="32" y="0" width="32" height="32" />
+		<Region name="player3" x="64" y="0" width="32" height="32" />
+		<Region name="player4" x="96" y="0" width="32" height="32" />
+		<Region name="player5" x="128" y="0" width="32" height="32" />
+		<Region name="player6" x="160" y="0" width="32" height="32" />
+		<Region name="player7" x="192" y="0" width="32" height="32" />
+		<Region name="player8" x="224" y="0" width="32" height="32" />
+		<Region name="player9" x="256" y="0" width="32" height="32" />
+		<Region name="player10" x="0" y="0" width="32" height="32" />
+		<Region name="player11" x="0" y="0" width="32" height="32" />
+		<Region name="player12" x="0" y="0" width="32" height="32" />
+		<Region name="player13" x="0" y="0" width="32" height="32" />
+		<Region name="player14" x="0" y="0" width="32" height="32" />
+		<Region name="player15" x="0" y="0" width="32" height="32" />
+		<Region name="player16" x="0" y="0" width="32" height="32" />
+		<Region name="player17" x="0" y="0" width="32" height="32" />
+		<Region name="player18" x="0" y="0" width="32" height="32" />
+		<Region name="player19" x="0" y="0" width="32" height="32" />
+		<Region name="player20" x="0" y="0" width="32" height="32" />
+		<Region name="player21" x="0" y="0" width="32" height="32" />
+		<Region name="player22" x="0" y="0" width="32" height="32" />
+		<Region name="player23" x="0" y="0" width="32" height="32" />
+		<Region name="player24" x="0" y="0" width="32" height="32" />
+		<Region name="player25" x="0" y="0" width="32" height="32" />
+		<Region name="player26" x="0" y="0" width="32" height="32" />
+		<Region name="player27" x="0" y="0" width="32" height="32" />
+		<Region name="player28" x="0" y="0" width="32" height="32" />
+	</Regions>
+	<Animations>
+		<Animation name="player" delay="200">
+			<Frame region="player1" />
+			<Frame region="player2" />
+		</Animation>
+	</Animations>
+</TextureAtlas>

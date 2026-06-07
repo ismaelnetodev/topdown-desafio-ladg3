@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin images/logo.png
+#begin enemy/atlas.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,7 +23,13 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/logo.png
+/build:enemy/atlas.png
+
+#begin enemy/enemy_definition.xml
+/copy:enemy/enemy_definition.xml
+
+#begin player/player_definition.xml
+/copy:player/player_definition.xml
 
 #begin player/spritesheets.png
 /importer:TextureImporter

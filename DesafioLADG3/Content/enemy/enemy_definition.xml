@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas>
+    <Texture>enemy/atlas</Texture>
+    <Regions>
+		<Region name="enemy1" x="0" y="0" width="20" height="20" />
+		<Region name="enemy2" x="20" y="20" width="20" height="20" />
+		<Region name="enemy3" x="40" y="0" width="20" height="20" />
+    </Regions>
+	<Animations>
+		<Animation name="enemy" delay="200">
+			<Frame region="enemy1" />
+			<Frame region="enemy2" />
+			<Frame region="enemy1" />
+			<Frame region="enemy3" />
+		</Animation>
+	</Animations>
+</TextureAtlas>
