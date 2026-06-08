@@ -11,30 +11,33 @@
 		<Region name="player7" x="192" y="0" width="32" height="32" />
 		<Region name="player8" x="224" y="0" width="32" height="32" />
 		<Region name="player9" x="256" y="0" width="32" height="32" />
-		<Region name="player10" x="0" y="0" width="32" height="32" />
-		<Region name="player11" x="0" y="0" width="32" height="32" />
-		<Region name="player12" x="0" y="0" width="32" height="32" />
-		<Region name="player13" x="0" y="0" width="32" height="32" />
-		<Region name="player14" x="0" y="0" width="32" height="32" />
-		<Region name="player15" x="0" y="0" width="32" height="32" />
-		<Region name="player16" x="0" y="0" width="32" height="32" />
-		<Region name="player17" x="0" y="0" width="32" height="32" />
-		<Region name="player18" x="0" y="0" width="32" height="32" />
-		<Region name="player19" x="0" y="0" width="32" height="32" />
-		<Region name="player20" x="0" y="0" width="32" height="32" />
-		<Region name="player21" x="0" y="0" width="32" height="32" />
-		<Region name="player22" x="0" y="0" width="32" height="32" />
-		<Region name="player23" x="0" y="0" width="32" height="32" />
-		<Region name="player24" x="0" y="0" width="32" height="32" />
-		<Region name="player25" x="0" y="0" width="32" height="32" />
-		<Region name="player26" x="0" y="0" width="32" height="32" />
-		<Region name="player27" x="0" y="0" width="32" height="32" />
-		<Region name="player28" x="0" y="0" width="32" height="32" />
+		<Region name="player10" x="288" y="0" width="32" height="32" />
+		<Region name="player11" x="320" y="0" width="32" height="32" />
+		<Region name="player12" x="352" y="0" width="32" height="32" />
+		<Region name="player13" x="384" y="0" width="32" height="32" />
+		<Region name="player14" x="416" y="0" width="32" height="32" />
+		<Region name="player15" x="448" y="0" width="32" height="32" />
+		<Region name="player16" x="480" y="0" width="32" height="32" />
+		<Region name="player17" x="512" y="0" width="32" height="32" />
+		<Region name="player18" x="544" y="0" width="32" height="32" />
+		<Region name="player19" x="576" y="0" width="32" height="32" />
+		<Region name="player20" x="608" y="0" width="32" height="32" />
+		<Region name="player21" x="640" y="0" width="32" height="32" />
+		<Region name="player22" x="672" y="0" width="32" height="32" />
+		<Region name="player23" x="704" y="0" width="32" height="32" />
+		<Region name="player24" x="736" y="0" width="32" height="32" />
+		<Region name="player25" x="768" y="0" width="32" height="32" />
+		<Region name="player26" x="800" y="0" width="32" height="32" />
+		<Region name="player27" x="832" y="0" width="32" height="32" />
+		<Region name="player28" x="864" y="0" width="32" height="32" />
 	</Regions>
 	<Animations>
-		<Animation name="player" delay="200">
+		<Animation name="player_walk_down" delay="150">
 			<Frame region="player1" />
-			<Frame region="player2" />
+			<Frame region="player6" />
+			<Frame region="player7" />
+			<Frame region="player8" />
+			<Frame region="player9" />
 		</Animation>
 	</Animations>
 </TextureAtlas>

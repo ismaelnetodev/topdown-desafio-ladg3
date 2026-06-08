@@ -2,7 +2,7 @@
 <TextureAtlas>
     <Texture>enemy/atlas</Texture>
     <Regions>
-		<Region name="enemy1" x="0" y="0" width="20" height="20" />
+		<Region name="enemy1" x="20" y="0" width="20" height="20" />
 		<Region name="enemy2" x="20" y="20" width="20" height="20" />
 		<Region name="enemy3" x="40" y="0" width="20" height="20" />
     </Regions>
