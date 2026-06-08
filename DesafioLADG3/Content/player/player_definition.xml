@@ -32,12 +32,48 @@
 		<Region name="player28" x="864" y="0" width="32" height="32" />
 	</Regions>
 	<Animations>
-		<Animation name="player_walk_down" delay="150">
+		<Animation name="walk_down" delay="150">
 			<Frame region="player1" />
 			<Frame region="player6" />
 			<Frame region="player7" />
 			<Frame region="player8" />
 			<Frame region="player9" />
 		</Animation>
+		
+		<Animation name="walk_up" delay="150">
+			<Frame region="player2" />
+			<Frame region="player10" />
+			<Frame region="player11" />
+			<Frame region="player12" />
+			<Frame region="player13" />
+		</Animation>
+		
+		<Animation name="walk_left" delay="150">
+			<Frame region="player3" />
+			<Frame region="player14" />
+			<Frame region="player15" />
+			<Frame region="player16" />
+			<Frame region="player17" />
+			<Frame region="player18" />
+		</Animation>
+
+		<Animation name="walk_diag_down_left" delay="150">
+			<Frame region="player4" />
+			<Frame region="player19" />
+			<Frame region="player20" />
+			<Frame region="player21" />
+			<Frame region="player22" />
+			<Frame region="player23" />
+		</Animation>
+
+		<Animation name="walk_diag_up_left" delay="150">
+			<Frame region="player5" />
+			<Frame region="player24" />
+			<Frame region="player25" />
+			<Frame region="player26" />
+			<Frame region="player27" />
+			<Frame region="player28" />
+		</Animation>
+		
 	</Animations>
 </TextureAtlas>

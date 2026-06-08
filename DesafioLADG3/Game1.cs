@@ -12,6 +12,7 @@ namespace DesafioLADG3
     {
 
         private AnimatedSprite _player;
+        private TextureAtlas _playerAtlas;
         private AnimatedSprite _enemy;
 
         private Vector2 _playerPosition;
@@ -34,10 +35,11 @@ namespace DesafioLADG3
 
         protected override void LoadContent()
         {
-            TextureAtlas playerTextureAtlas = TextureAtlas.FromFile(Content, "player/player_definition.xml");
+            //TextureAtlas playerTextureAtlas = TextureAtlas.FromFile(Content, "player/player_definition.xml");
+            _playerAtlas = TextureAtlas.FromFile(Content, "player/player_definition.xml");
             TextureAtlas enemyTextureAtlas = TextureAtlas.FromFile(Content, "enemy/enemy_definition.xml");
 
-            _player = playerTextureAtlas.CreateAnimatedSprite("player_walk_down");
+            _player = _playerAtlas.CreateAnimatedSprite("walk_down");
             _player.Scale = new Vector2(2.5f, 2.5f);
 
             _enemy = enemyTextureAtlas.CreateAnimatedSprite("enemy");
@@ -45,6 +47,14 @@ namespace DesafioLADG3
 
 
             base.LoadContent();
+        }
+
+        private void SetPlayerAnimation(string name, bool flipH)
+        {
+            if (_player.Animation == _playerAtlas.GetAnimation(name)) return;
+            _player.Animation = _playerAtlas.GetAnimation(name);
+
+            _player.Effects = flipH ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
         }
 
         protected override void Update(GameTime gameTime)
@@ -152,17 +162,32 @@ namespace DesafioLADG3
             float speed = MOVEMENT_SPEED;
             if (Input.Keyboard.IsKeyDown(Keys.Space)) speed *= 1.5f;
 
-            if (Input.Keyboard.IsKeyDown(Keys.W) || Input.Keyboard.IsKeyDown(Keys.Up))
-                _playerPosition.Y -= speed;
+            var dir = Vector2.Zero;
 
-            if (Input.Keyboard.IsKeyDown(Keys.S) || Input.Keyboard.IsKeyDown(Keys.Down))
-                _playerPosition.Y += speed;
+            if (Input.Keyboard.IsKeyDown(Keys.W) || Input.Keyboard.IsKeyDown(Keys.Up)) dir.Y -= 1;
+            if (Input.Keyboard.IsKeyDown(Keys.S) || Input.Keyboard.IsKeyDown(Keys.Down)) dir.Y += 1;
+            if (Input.Keyboard.IsKeyDown(Keys.A) || Input.Keyboard.IsKeyDown(Keys.Left)) dir.X -= 1;
+            if (Input.Keyboard.IsKeyDown(Keys.D) || Input.Keyboard.IsKeyDown(Keys.Right)) dir.X += 1;
 
-            if (Input.Keyboard.IsKeyDown(Keys.A) || Input.Keyboard.IsKeyDown(Keys.Left))
-                _playerPosition.X -= speed;
+            if (dir != Vector2.Zero)
+            {
+                _playerPosition += Vector2.Normalize(dir) * speed;
 
-            if (Input.Keyboard.IsKeyDown(Keys.D) || Input.Keyboard.IsKeyDown(Keys.Right))
-                _playerPosition.X += speed;
+                var (animName, flip) = (dir.X, dir.Y) switch
+                {
+                    (0, 1) => ("walk_down", false),
+                    (0, -1) => ("walk_up", false),
+                    (-1, 0) => ("walk_left", false),
+                    (1, 0) => ("walk_left", true),
+                    (-1, 1) => ("walk_diag_down_left", false),
+                    (1, 1) => ("walk_diag_down_left", true),
+                    (-1, -1) => ("walk_diag_up_left", false),
+                    (1, -1) => ("walk_diag_up_left", true),
+                    _ => ("walk_down", false)
+                };
+
+                SetPlayerAnimation(animName, flip);
+            }
         }
 
         private void CheckForGamePadInput()
