@@ -5,6 +5,11 @@ using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary;
 using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Input;
+using Gum.Forms;
+using Gum.Forms.Controls;
+using Gum.Wireframe;
+using Gum.GueDeriving;
+using MonoGameGum;
 
 namespace DesafioLADG3
 {
@@ -21,6 +26,20 @@ namespace DesafioLADG3
         private Vector2 _enemyPosition;
         private Vector2 _enemyVelocity;
 
+        private const int PLAYER_MAX_HEALTH = 5;
+        private int _playerHealth = PLAYER_MAX_HEALTH;
+
+        private static readonly TimeSpan DAMAGE_COOLDOWN_DURATION = TimeSpan.FromSeconds(1);
+        private TimeSpan _damageCooldown = TimeSpan.Zero;
+
+        private Panel _hudPanel;
+        private RectangleRuntime _healthBarBackground;
+        private RectangleRuntime _healthBarFill;
+        private TextRuntime _healthText;
+
+        private const float HEALTH_BAR_WIDTH = 200f;
+        private const float HEALTH_BAR_HEIGHT = 24f;
+
         public Game1() : base("Desafio LADG 3", 1280, 720, false)
         {
            
@@ -29,8 +48,55 @@ namespace DesafioLADG3
         protected override void Initialize()
         {
             base.Initialize();
+            InitizalizeGum();
+            CreateHud();
             _enemyPosition = new Vector2(_player.Width + 10, 0);
             AssignRandomEnemyVelocity();
+        }
+
+        private void InitizalizeGum()
+        {
+            GumService.Default.Initialize(this, DefaultVisualsVersion.V3);
+            GumService.Default.ContentLoader.XnaContentManager = Core.Content;
+        }
+
+        private void CreateHud()
+        {
+            _hudPanel = new Panel();
+            _hudPanel.Dock(Dock.Fill);
+            _hudPanel.AddToRoot();
+
+            _healthBarBackground = new RectangleRuntime();
+            _healthBarBackground.X = 20;
+            _healthBarBackground.Y = 20;
+            _healthBarBackground.Width = HEALTH_BAR_WIDTH;
+            _healthBarBackground.Height = HEALTH_BAR_HEIGHT;
+            _healthBarBackground.FillColor = Color.DarkRed;
+            _hudPanel.AddChild(_healthBarBackground);
+
+            _healthBarFill = new RectangleRuntime();
+            _healthBarFill.X = 20;
+            _healthBarFill.Y = 20;
+            _healthBarFill.Width = HEALTH_BAR_WIDTH;
+            _healthBarFill.Height = HEALTH_BAR_HEIGHT;
+            _healthBarFill.FillColor = Color.Red;
+            _hudPanel.AddChild(_healthBarFill);
+
+            _healthText = new TextRuntime();
+            _healthText.X = 24;
+            _healthText.Y = 22;
+            _healthText.Text = $"HP: {_playerHealth}/{PLAYER_MAX_HEALTH}";
+            _hudPanel.AddChild(_healthText);
+
+            UpdateHealthUi();
+        }
+
+        private void UpdateHealthUi()
+        {
+            float healthPercent = _playerHealth / (float)PLAYER_MAX_HEALTH;
+
+            _healthBarFill.Width = HEALTH_BAR_WIDTH * healthPercent;
+            _healthText.Text = $"HP: {_playerHealth}/{PLAYER_MAX_HEALTH}";
         }
 
         protected override void LoadContent()
@@ -65,6 +131,9 @@ namespace DesafioLADG3
             _player.Update(gameTime);
             _enemy.Update(gameTime);
 
+            if (_damageCooldown > TimeSpan.Zero) 
+                _damageCooldown -= gameTime.ElapsedGameTime;
+
             CheckForKeyboardInput();
             CheckForGamePadInput();
 
@@ -75,11 +144,7 @@ namespace DesafioLADG3
                 GraphicsDevice.PresentationParameters.BackBufferHeight
             );
 
-            Circle playerBounds = new Circle(
-                (int)(_playerPosition.X + (_player.Width * 0.5f)),
-                (int)(_playerPosition.Y + (_player.Height * 0.5f)),
-                (int)(_player.Width * 0.5f)
-            );
+            Circle playerBounds = GetPlayerBounds();
 
             if (playerBounds.Left < screenBounds.Left)
                 _playerPosition.X = screenBounds.Left;
@@ -91,13 +156,11 @@ namespace DesafioLADG3
             else if (playerBounds.Bottom > screenBounds.Bottom)
                 _playerPosition.Y = screenBounds.Bottom - _player.Height;
 
+            playerBounds = GetPlayerBounds();
+
             Vector2 newEnemyPosition = _enemyPosition + _enemyVelocity;
 
-            Circle enemyBounds = new Circle(
-                (int)(newEnemyPosition.X + (_enemy.Width * 0.5f)),
-                (int)(newEnemyPosition.Y + (_enemy.Height * 0.5f)),
-                (int)(_enemy.Width * 0.5f)
-            );
+            Circle enemyBounds = GetEnemyBounds(newEnemyPosition);
 
             Vector2 normal = Vector2.Zero;
 
@@ -120,7 +183,7 @@ namespace DesafioLADG3
             else if (enemyBounds.Bottom > screenBounds.Bottom)
             {
                 normal.Y = -Vector2.UnitY.Y;
-                _enemyVelocity.Y = screenBounds.Bottom - _enemy.Height;
+                newEnemyPosition.Y = screenBounds.Bottom - _enemy.Height;
             }
 
             if (normal != Vector2.Zero)
@@ -131,20 +194,56 @@ namespace DesafioLADG3
 
             _enemyPosition = newEnemyPosition;
 
-            if (playerBounds.Intersects(enemyBounds))
+            enemyBounds = GetEnemyBounds(_enemyPosition);
+
+            if (playerBounds.Intersects(enemyBounds) && _damageCooldown <= TimeSpan.Zero)
             {
-                int TotalColumns = GraphicsDevice.PresentationParameters.BackBufferWidth / (int)_enemy.Width;
-                int TotalRows = GraphicsDevice.PresentationParameters.BackBufferHeight / (int)_enemy.Height;
+                _playerHealth--;
 
-                int column = Random.Shared.Next(0, TotalColumns);
-                int row = Random.Shared.Next(0, TotalRows);
+                if (_playerHealth < 0)
+                    _playerHealth = 0;
 
-                _enemyPosition = new Vector2(column * _enemy.Width, row * _enemy.Height);
+                UpdateHealthUi();
 
-                AssignRandomEnemyVelocity();
+                _damageCooldown = DAMAGE_COOLDOWN_DURATION;
+
+                RespawnEnemy(screenBounds);
             }
 
+            GumService.Default.Update(gameTime);
+
             base.Update(gameTime);
+        }
+
+        private void RespawnEnemy(Rectangle screenBounds)
+        {
+            int totalColumns = screenBounds.Width / (int)_enemy.Width;
+            int totalRows = screenBounds.Height / (int)_enemy.Height;
+
+            int column = Random.Shared.Next(0, totalColumns);
+            int row = Random.Shared.Next(0, totalRows);
+
+            _enemyPosition = new Vector2(column * _enemy.Width, row * _enemy.Height);
+
+            AssignRandomEnemyVelocity();
+        }
+
+        private Circle GetPlayerBounds()
+        {
+            return new Circle(
+                (int)(_playerPosition.X + (_player.Width * 0.5f)),
+                (int)(_playerPosition.Y + (_player.Height * 0.5f)),
+                (int)(_player.Width * 0.5f)
+            );
+        }
+
+        private Circle GetEnemyBounds(Vector2 position)
+        {
+            return new Circle(
+                (int)(position.X + (_enemy.Width * 0.5f)),
+                (int)(position.Y + (_enemy.Height * 0.5f)),
+                (int)(_enemy.Width * 0.5f)
+            );
         }
 
         private void AssignRandomEnemyVelocity()
@@ -238,6 +337,8 @@ namespace DesafioLADG3
             _enemy.Draw(SpriteBatch, _enemyPosition);
 
             SpriteBatch.End();
+
+            GumService.Default.Draw();
 
             base.Draw(gameTime);
         }
